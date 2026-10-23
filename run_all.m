@@ -60,7 +60,8 @@ try
     load_system([mdl '.mdl']);
     R = readmatrix('ref_in.csv');
     E = readmatrix('ref_out.csv');
-    N = size(R, 1);
+    N = size(E, 1);             % R'de StopTime'ı kapsayan fazladan satır var
+    if isempty(E), N = size(R, 1) - 1; end
     dt = str2double(get_param(mdl, 'FixedStep'));
     args = {'StopTime', num2str((N - 1) * dt, 17), ...
             'SaveOutput', 'on', 'OutputSaveName', 'yout', ...
