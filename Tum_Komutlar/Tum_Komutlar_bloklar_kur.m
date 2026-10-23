@@ -25,15 +25,10 @@ Simulink.SubSystem.deleteContents(s);
 
 % --- kok: girisler / cikislar ---
 add_block('simulink/Sources/In1', [mdl '/basinc'], 'Port', '1', 'Interpolate', 'off', 'Position', [60 70 90 84]);
-add_line(mdl, 'basinc/1', 'Tum_Komutlar/1', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/komut'], 'Port', '2', 'Interpolate', 'off', 'Position', [60 110 90 124]);
-add_line(mdl, 'komut/1', 'Tum_Komutlar/2', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/izin'], 'Port', '3', 'Interpolate', 'off', 'Position', [60 150 90 164]);
-add_line(mdl, 'izin/1', 'Tum_Komutlar/3', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/kelime'], 'Port', '4', 'Interpolate', 'off', 'Position', [60 190 90 204]);
-add_line(mdl, 'kelime/1', 'Tum_Komutlar/4', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/n'], 'Port', '5', 'Interpolate', 'off', 'Position', [60 230 90 244]);
-add_line(mdl, 'n/1', 'Tum_Komutlar/5', 'autorouting', 'on');
 
 % --- ana alt sistem: girisler, kalici durum, deyim alt sistemleri ---
 add_block('simulink/Sources/In1', [s '/in_basinc'], 'Port', '1', 'Position', [20 90 50 104]);
@@ -99,30 +94,35 @@ add_block('simulink/Ports & Subsystems/Subsystem', [s '/Cevrim_sonu_durum_guncel
 Simulink.SubSystem.deleteContents([s '/Cevrim_sonu_durum_guncelleme']);
 add_block('simulink/Sinks/Out1', [s '/out_valf'], 'Port', '1', 'Position', [4280 90 4310 104]);
 add_block('simulink/Sinks/Out1', [mdl '/valf'], 'Port', '1', 'Position', [640 70 670 84]);
-add_line(mdl, 'Tum_Komutlar/1', 'valf/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_pompa'], 'Port', '2', 'Position', [4280 140 4310 154]);
 add_block('simulink/Sinks/Out1', [mdl '/pompa'], 'Port', '2', 'Position', [640 110 670 124]);
-add_line(mdl, 'Tum_Komutlar/2', 'pompa/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_mod'], 'Port', '3', 'Position', [4280 190 4310 204]);
 add_block('simulink/Sinks/Out1', [mdl '/mod'], 'Port', '3', 'Position', [640 150 670 164]);
-add_line(mdl, 'Tum_Komutlar/3', 'mod/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_sayac'], 'Port', '4', 'Position', [4280 240 4310 254]);
 add_block('simulink/Sinks/Out1', [mdl '/sayac'], 'Port', '4', 'Position', [640 190 670 204]);
-add_line(mdl, 'Tum_Komutlar/4', 'sayac/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_toplam'], 'Port', '5', 'Position', [4280 290 4310 304]);
 add_block('simulink/Sinks/Out1', [mdl '/toplam'], 'Port', '5', 'Position', [640 230 670 244]);
-add_line(mdl, 'Tum_Komutlar/5', 'toplam/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_bitler'], 'Port', '6', 'Position', [4280 340 4310 354]);
 add_block('simulink/Sinks/Out1', [mdl '/bitler'], 'Port', '6', 'Position', [640 270 670 284]);
-add_line(mdl, 'Tum_Komutlar/6', 'bitler/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_hata'], 'Port', '7', 'Position', [4280 390 4310 404]);
 add_block('simulink/Sinks/Out1', [mdl '/hata'], 'Port', '7', 'Position', [640 310 670 324]);
-add_line(mdl, 'Tum_Komutlar/7', 'hata/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_f'], 'Port', '8', 'Position', [4280 440 4310 454]);
 add_block('simulink/Sinks/Out1', [mdl '/f'], 'Port', '8', 'Position', [640 350 670 364]);
-add_line(mdl, 'Tum_Komutlar/8', 'f/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_sonuc'], 'Port', '9', 'Position', [4280 490 4310 504]);
 add_block('simulink/Sinks/Out1', [mdl '/sonuc'], 'Port', '9', 'Position', [640 390 670 404]);
+add_line(mdl, 'basinc/1', 'Tum_Komutlar/1', 'autorouting', 'on');
+add_line(mdl, 'komut/1', 'Tum_Komutlar/2', 'autorouting', 'on');
+add_line(mdl, 'izin/1', 'Tum_Komutlar/3', 'autorouting', 'on');
+add_line(mdl, 'kelime/1', 'Tum_Komutlar/4', 'autorouting', 'on');
+add_line(mdl, 'n/1', 'Tum_Komutlar/5', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/1', 'valf/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/2', 'pompa/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/3', 'mod/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/4', 'sayac/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/5', 'toplam/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/6', 'bitler/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/7', 'hata/1', 'autorouting', 'on');
+add_line(mdl, 'Tum_Komutlar/8', 'f/1', 'autorouting', 'on');
 add_line(mdl, 'Tum_Komutlar/9', 'sonuc/1', 'autorouting', 'on');
 
 % --- deyim alt sistemlerinin icerigi ---

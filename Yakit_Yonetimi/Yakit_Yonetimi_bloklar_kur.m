@@ -24,19 +24,12 @@ Simulink.SubSystem.deleteContents(s);
 
 % --- kok: girisler / cikislar ---
 add_block('simulink/Sources/In1', [mdl '/p_tank1'], 'Port', '1', 'Interpolate', 'off', 'Position', [60 70 90 84]);
-add_line(mdl, 'p_tank1/1', 'Yakit_Yonetimi/1', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/p_tank2'], 'Port', '2', 'Interpolate', 'off', 'Position', [60 110 90 124]);
-add_line(mdl, 'p_tank2/1', 'Yakit_Yonetimi/2', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/p_tank3'], 'Port', '3', 'Interpolate', 'off', 'Position', [60 150 90 164]);
-add_line(mdl, 'p_tank3/1', 'Yakit_Yonetimi/3', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/sicaklik'], 'Port', '4', 'Interpolate', 'off', 'Position', [60 190 90 204]);
-add_line(mdl, 'sicaklik/1', 'Yakit_Yonetimi/4', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/komut'], 'Port', '5', 'Interpolate', 'off', 'Position', [60 230 90 244]);
-add_line(mdl, 'komut/1', 'Yakit_Yonetimi/5', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/sensor_ok'], 'Port', '6', 'Interpolate', 'off', 'Position', [60 270 90 284]);
-add_line(mdl, 'sensor_ok/1', 'Yakit_Yonetimi/6', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/maske'], 'Port', '7', 'Interpolate', 'off', 'Position', [60 310 90 324]);
-add_line(mdl, 'maske/1', 'Yakit_Yonetimi/7', 'autorouting', 'on');
 
 % --- ana alt sistem: girisler, kalici durum, deyim alt sistemleri ---
 add_block('simulink/Sources/In1', [s '/in_p_tank1'], 'Port', '1', 'Position', [20 90 50 104]);
@@ -114,36 +107,43 @@ add_block('simulink/Ports & Subsystems/Subsystem', [s '/Cevrim_sonu_durum_guncel
 Simulink.SubSystem.deleteContents([s '/Cevrim_sonu_durum_guncelleme']);
 add_block('simulink/Sinks/Out1', [s '/out_durum'], 'Port', '1', 'Position', [4540 90 4570 104]);
 add_block('simulink/Sinks/Out1', [mdl '/durum'], 'Port', '1', 'Position', [640 70 670 84]);
-add_line(mdl, 'Yakit_Yonetimi/1', 'durum/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_alt_durum'], 'Port', '2', 'Position', [4540 140 4570 154]);
 add_block('simulink/Sinks/Out1', [mdl '/alt_durum'], 'Port', '2', 'Position', [640 110 670 124]);
-add_line(mdl, 'Yakit_Yonetimi/2', 'alt_durum/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_v_giris'], 'Port', '3', 'Position', [4540 190 4570 204]);
 add_block('simulink/Sinks/Out1', [mdl '/v_giris'], 'Port', '3', 'Position', [640 150 670 164]);
-add_line(mdl, 'Yakit_Yonetimi/3', 'v_giris/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_v_cikis'], 'Port', '4', 'Position', [4540 240 4570 254]);
 add_block('simulink/Sinks/Out1', [mdl '/v_cikis'], 'Port', '4', 'Position', [640 190 670 204]);
-add_line(mdl, 'Yakit_Yonetimi/4', 'v_cikis/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_v_tahliye'], 'Port', '5', 'Position', [4540 290 4570 304]);
 add_block('simulink/Sinks/Out1', [mdl '/v_tahliye'], 'Port', '5', 'Position', [640 230 670 244]);
-add_line(mdl, 'Yakit_Yonetimi/5', 'v_tahliye/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_p_secilen'], 'Port', '6', 'Position', [4540 340 4570 354]);
 add_block('simulink/Sinks/Out1', [mdl '/p_secilen'], 'Port', '6', 'Position', [640 270 670 284]);
-add_line(mdl, 'Yakit_Yonetimi/6', 'p_secilen/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_ariza_kodu'], 'Port', '7', 'Position', [4540 390 4570 404]);
 add_block('simulink/Sinks/Out1', [mdl '/ariza_kodu'], 'Port', '7', 'Position', [640 310 670 324]);
-add_line(mdl, 'Yakit_Yonetimi/7', 'ariza_kodu/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_deneme'], 'Port', '8', 'Position', [4540 440 4570 454]);
 add_block('simulink/Sinks/Out1', [mdl '/deneme'], 'Port', '8', 'Position', [640 350 670 364]);
-add_line(mdl, 'Yakit_Yonetimi/8', 'deneme/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_filtre'], 'Port', '9', 'Position', [4540 490 4570 504]);
 add_block('simulink/Sinks/Out1', [mdl '/filtre'], 'Port', '9', 'Position', [640 390 670 404]);
-add_line(mdl, 'Yakit_Yonetimi/9', 'filtre/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_histerezis'], 'Port', '10', 'Position', [4540 540 4570 554]);
 add_block('simulink/Sinks/Out1', [mdl '/histerezis'], 'Port', '10', 'Position', [640 430 670 444]);
-add_line(mdl, 'Yakit_Yonetimi/10', 'histerezis/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_kalp'], 'Port', '11', 'Position', [4540 590 4570 604]);
 add_block('simulink/Sinks/Out1', [mdl '/kalp'], 'Port', '11', 'Position', [640 470 670 484]);
+add_line(mdl, 'p_tank1/1', 'Yakit_Yonetimi/1', 'autorouting', 'on');
+add_line(mdl, 'p_tank2/1', 'Yakit_Yonetimi/2', 'autorouting', 'on');
+add_line(mdl, 'p_tank3/1', 'Yakit_Yonetimi/3', 'autorouting', 'on');
+add_line(mdl, 'sicaklik/1', 'Yakit_Yonetimi/4', 'autorouting', 'on');
+add_line(mdl, 'komut/1', 'Yakit_Yonetimi/5', 'autorouting', 'on');
+add_line(mdl, 'sensor_ok/1', 'Yakit_Yonetimi/6', 'autorouting', 'on');
+add_line(mdl, 'maske/1', 'Yakit_Yonetimi/7', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/1', 'durum/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/2', 'alt_durum/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/3', 'v_giris/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/4', 'v_cikis/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/5', 'v_tahliye/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/6', 'p_secilen/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/7', 'ariza_kodu/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/8', 'deneme/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/9', 'filtre/1', 'autorouting', 'on');
+add_line(mdl, 'Yakit_Yonetimi/10', 'histerezis/1', 'autorouting', 'on');
 add_line(mdl, 'Yakit_Yonetimi/11', 'kalp/1', 'autorouting', 'on');
 
 % --- deyim alt sistemlerinin icerigi ---

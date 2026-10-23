@@ -24,9 +24,7 @@ Simulink.SubSystem.deleteContents(s);
 
 % --- kok: girisler / cikislar ---
 add_block('simulink/Sources/In1', [mdl '/komut'], 'Port', '1', 'Interpolate', 'off', 'Position', [60 70 90 84]);
-add_line(mdl, 'komut/1', 'Turkce_Modul/1', 'autorouting', 'on');
 add_block('simulink/Sources/In1', [mdl '/sicaklik'], 'Port', '2', 'Interpolate', 'off', 'Position', [60 110 90 124]);
-add_line(mdl, 'sicaklik/1', 'Turkce_Modul/2', 'autorouting', 'on');
 
 % --- ana alt sistem: girisler, kalici durum, deyim alt sistemleri ---
 add_block('simulink/Sources/In1', [s '/in_komut'], 'Port', '1', 'Position', [20 90 50 104]);
@@ -45,9 +43,11 @@ add_block('simulink/Ports & Subsystems/Subsystem', [s '/Cevrim_sonu_durum_guncel
 Simulink.SubSystem.deleteContents([s '/Cevrim_sonu_durum_guncelleme']);
 add_block('simulink/Sinks/Out1', [s '/out_durum'], 'Port', '1', 'Position', [900 90 930 104]);
 add_block('simulink/Sinks/Out1', [mdl '/durum'], 'Port', '1', 'Position', [640 70 670 84]);
-add_line(mdl, 'Turkce_Modul/1', 'durum/1', 'autorouting', 'on');
 add_block('simulink/Sinks/Out1', [s '/out_cikis'], 'Port', '2', 'Position', [900 140 930 154]);
 add_block('simulink/Sinks/Out1', [mdl '/cikis'], 'Port', '2', 'Position', [640 110 670 124]);
+add_line(mdl, 'komut/1', 'Turkce_Modul/1', 'autorouting', 'on');
+add_line(mdl, 'sicaklik/1', 'Turkce_Modul/2', 'autorouting', 'on');
+add_line(mdl, 'Turkce_Modul/1', 'durum/1', 'autorouting', 'on');
 add_line(mdl, 'Turkce_Modul/2', 'cikis/1', 'autorouting', 'on');
 
 % --- deyim alt sistemlerinin icerigi ---

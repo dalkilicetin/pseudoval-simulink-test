@@ -21,6 +21,7 @@ for i = 1:numel(mods)
     if exist([M '_bloklar_kur.m'], 'file')
         kx = betik([M '_bloklar_kur']);
         if isempty(kx)
+            resim(kok, [M '_bloklar'], M);
             sonuc(end+1, :) = {M, 'STANDART BLOKLAR (.slx)', simule(M, [M '_bloklar'])}; %#ok<AGROW>
         else
             sonuc(end+1, :) = {M, 'STANDART BLOKLAR kurulum', kx}; %#ok<AGROW>
@@ -51,6 +52,24 @@ if nf > 0
 end
 
 %% ------------------------------------------------------------------
+function resim(kok, mdl, M)
+%% modelin ust seviyesi, algoritma alt sistemi ve deyim alt sistemlerinin
+%% PNG goruntusu (iş akisi ciktisi olarak saklanir)
+d = fullfile(kok, 'resimler');
+if ~exist(d, 'dir'), mkdir(d); end
+try
+    load_system(mdl);
+    sistemler = [{mdl, [mdl '/' M]}, ...
+        find_system([mdl '/' M], 'SearchDepth', 1, 'BlockType', 'SubSystem')'];
+    for i = 1:numel(sistemler)
+        ad = regexprep(sistemler{i}, '[^A-Za-z0-9_]', '_');
+        print(['-s' sistemler{i}], '-dpng', '-r110', fullfile(d, [ad '.png']));
+    end
+catch ME
+    fprintf('resim alinamadi: %s\n', ME.message);
+end
+end
+
 function msg = betik(ad)
 %% betik (script) temel calisma alaninda kosulur: anonim fonksiyon icinden
 %% cagrilinca "Attempt to add ... to a static workspace" hatasi verir
