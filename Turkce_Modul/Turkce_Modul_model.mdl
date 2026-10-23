@@ -19,6 +19,7 @@ Model {
       Position	[40, 52, 70, 66]
       Port	"1"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -27,6 +28,7 @@ Model {
       Position	[40, 112, 70, 126]
       Port	"2"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	SubSystem

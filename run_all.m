@@ -15,10 +15,10 @@ sonuc = {};
 for i = 1:numel(mods)
     M = mods{i};
     cd(fullfile(kok, M));
-    sonuc(end+1, :) = {M, 'selftest', dene(@() evalc([M '_selftest']))}; %#ok<AGROW>
+    sonuc(end+1, :) = {M, 'selftest', betik([M '_selftest'])}; %#ok<AGROW>
     close all force;
     sonuc(end+1, :) = {M, 'MATLAB S-Function', simule(M, [M '_model'])}; %#ok<AGROW>
-    mx = dene(@() evalc(['build_' M]));
+    mx = betik(['build_' M]);
     if isempty(mx)
         sonuc(end+1, :) = {M, 'C MEX S-Function', simule(M, [M '_model_mex'])}; %#ok<AGROW>
     else
@@ -43,10 +43,12 @@ if nf > 0
 end
 
 %% ------------------------------------------------------------------
-function msg = dene(f)
+function msg = betik(ad)
+%% betik (script) temel calisma alaninda kosulur: anonim fonksiyon icinden
+%% cagrilinca "Attempt to add ... to a static workspace" hatasi verir
 msg = '';
 try
-    f();
+    evalin('base', sprintf('evalc(''%s'');', ad));
 catch ME
     msg = getReport(ME, 'extended', 'hyperlinks', 'off');
 end
@@ -81,9 +83,15 @@ try
                abs(Y - E) <= 1e-9 * max(1, abs(E));
         [r, c] = find(~ayni, 1);
         if ~isempty(r)
-            msg = sprintf(['cevrim %d (t=%g) cikis %d: Simulink=%.17g, ' ...
-                           'yorumlayici=%.17g'], r - 1, R(r, 1), c, ...
-                          Y(r, c), E(r, c));
+            msg = sprintf(['cevrim %d cikis %d: Simulink=%.17g, ' ...
+                           'yorumlayici=%.17g'], r - 1, c, Y(r, c), E(r, c));
+            k = max(1, r - 3):min(N, r + 1);
+            msg = [msg sprintf('\n  girdiler (cevrim: degerler):')];
+            for kk = k
+                msg = [msg sprintf('\n    %d: %s | Simulink cikis %s | ref %s', ...
+                       kk - 1, mat2str(R(kk, 2:end)), mat2str(Y(kk, :)), ...
+                       mat2str(E(kk, :)))]; %#ok<AGROW>
+            end
         else
             fprintf('%s: %d cevrim x %d cikis yorumlayiciyla AYNI\n', ...
                     mdl, N, size(E, 2));

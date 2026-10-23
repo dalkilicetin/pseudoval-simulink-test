@@ -19,6 +19,7 @@ Model {
       Position	[40, 52, 70, 66]
       Port	"1"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -27,6 +28,7 @@ Model {
       Position	[40, 112, 70, 126]
       Port	"2"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -35,6 +37,7 @@ Model {
       Position	[40, 172, 70, 186]
       Port	"3"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -43,6 +46,7 @@ Model {
       Position	[40, 232, 70, 246]
       Port	"4"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -51,6 +55,7 @@ Model {
       Position	[40, 292, 70, 306]
       Port	"5"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -59,6 +64,7 @@ Model {
       Position	[40, 352, 70, 366]
       Port	"6"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	Inport
@@ -67,6 +73,7 @@ Model {
       Position	[40, 412, 70, 426]
       Port	"7"
       IconDisplay	"Port number"
+      Interpolate	off
     }
     Block {
       BlockType	SubSystem
