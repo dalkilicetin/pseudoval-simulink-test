@@ -1,0 +1,17 @@
+name: simulink
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  simulink:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: matlab-actions/setup-matlab@v2
+        with:
+          release: latest
+          products: Simulink
+          cache: true
+      - uses: matlab-actions/run-command@v2
+        with:
+          command: run_all

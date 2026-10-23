@@ -1,0 +1,493 @@
+Model {
+  Name	"Tum_Komutlar_model_mex"
+  Version	8.0
+  SavedCharacterEncoding	"UTF-8"
+  Description	"pseudoval tarafindan tum_komutlar.pseudo dosyasindan uretilmistir. Algoritma Tum_Komutlar_sfun_mex.c (C MEX S-Function) icindedir; once build_Tum_Komutlar ile derleyin."
+  Solver	"FixedStepDiscrete"
+  StartTime	"0.0"
+  StopTime	"10"
+  FixedStep	"0.01"
+  System {
+    Name	"Tum_Komutlar_model_mex"
+    Location	[80, 80, 980, 760]
+    Open	on
+    ZoomFactor	"100"
+    Block {
+      BlockType	Inport
+      Name	"basinc"
+      SID	"1"
+      Position	[40, 52, 70, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"komut"
+      SID	"2"
+      Position	[40, 112, 70, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"izin"
+      SID	"3"
+      Position	[40, 172, 70, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"kelime"
+      SID	"4"
+      Position	[40, 232, 70, 246]
+      Port	"4"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"n"
+      SID	"5"
+      Position	[40, 292, 70, 306]
+      Port	"5"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	SubSystem
+      Name	"Tum_Komutlar"
+      SID	"6"
+      Ports	[5, 9]
+      Position	[220, 40, 420, 580]
+      TreatAsAtomicUnit	on
+      Description	"Tum_Komutlar_sfun_mex: pseudocode'dan uretilen algoritma"
+      System {
+        Name	"Tum_Komutlar"
+        Location	[120, 120, 900, 670]
+        Open	off
+        ZoomFactor	"100"
+        Block {
+          BlockType	Inport
+          Name	"basinc"
+          SID	"7"
+          Position	[40, 42, 70, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Inport
+          Name	"komut"
+          SID	"8"
+          Position	[40, 92, 70, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Inport
+          Name	"izin"
+          SID	"9"
+          Position	[40, 142, 70, 156]
+          Port	"3"
+        }
+        Block {
+          BlockType	Inport
+          Name	"kelime"
+          SID	"10"
+          Position	[40, 192, 70, 206]
+          Port	"4"
+        }
+        Block {
+          BlockType	Inport
+          Name	"n"
+          SID	"11"
+          Position	[40, 242, 70, 256]
+          Port	"5"
+        }
+        Block {
+          BlockType	"S-Function"
+          Name	"Tum_Komutlar_sfun_mex"
+          SID	"12"
+          Ports	[5, 9]
+          Position	[200, 30, 380, 480]
+          FunctionName	"Tum_Komutlar_sfun_mex"
+          Parameters	""
+        }
+        Block {
+          BlockType	Outport
+          Name	"valf"
+          SID	"13"
+          Position	[500, 42, 530, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Outport
+          Name	"pompa"
+          SID	"14"
+          Position	[500, 92, 530, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Outport
+          Name	"mod"
+          SID	"15"
+          Position	[500, 142, 530, 156]
+          Port	"3"
+        }
+        Block {
+          BlockType	Outport
+          Name	"sayac"
+          SID	"16"
+          Position	[500, 192, 530, 206]
+          Port	"4"
+        }
+        Block {
+          BlockType	Outport
+          Name	"toplam"
+          SID	"17"
+          Position	[500, 242, 530, 256]
+          Port	"5"
+        }
+        Block {
+          BlockType	Outport
+          Name	"bitler"
+          SID	"18"
+          Position	[500, 292, 530, 306]
+          Port	"6"
+        }
+        Block {
+          BlockType	Outport
+          Name	"hata"
+          SID	"19"
+          Position	[500, 342, 530, 356]
+          Port	"7"
+        }
+        Block {
+          BlockType	Outport
+          Name	"f"
+          SID	"20"
+          Position	[500, 392, 530, 406]
+          Port	"8"
+        }
+        Block {
+          BlockType	Outport
+          Name	"sonuc"
+          SID	"21"
+          Position	[500, 442, 530, 456]
+          Port	"9"
+        }
+        Line {
+          SrcBlock	"basinc"
+          SrcPort	1
+          DstBlock	"Tum_Komutlar_sfun_mex"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"komut"
+          SrcPort	1
+          DstBlock	"Tum_Komutlar_sfun_mex"
+          DstPort	2
+        }
+        Line {
+          SrcBlock	"izin"
+          SrcPort	1
+          DstBlock	"Tum_Komutlar_sfun_mex"
+          DstPort	3
+        }
+        Line {
+          SrcBlock	"kelime"
+          SrcPort	1
+          DstBlock	"Tum_Komutlar_sfun_mex"
+          DstPort	4
+        }
+        Line {
+          SrcBlock	"n"
+          SrcPort	1
+          DstBlock	"Tum_Komutlar_sfun_mex"
+          DstPort	5
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	1
+          DstBlock	"valf"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	2
+          DstBlock	"pompa"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	3
+          DstBlock	"mod"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	4
+          DstBlock	"sayac"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	5
+          DstBlock	"toplam"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	6
+          DstBlock	"bitler"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	7
+          DstBlock	"hata"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	8
+          DstBlock	"f"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Tum_Komutlar_sfun_mex"
+          SrcPort	9
+          DstBlock	"sonuc"
+          DstPort	1
+        }
+      }
+    }
+    Block {
+      BlockType	Outport
+      Name	"valf"
+      SID	"22"
+      Position	[600, 52, 630, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"pompa"
+      SID	"23"
+      Position	[600, 112, 630, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"mod"
+      SID	"24"
+      Position	[600, 172, 630, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"sayac"
+      SID	"25"
+      Position	[600, 232, 630, 246]
+      Port	"4"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"toplam"
+      SID	"26"
+      Position	[600, 292, 630, 306]
+      Port	"5"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"bitler"
+      SID	"27"
+      Position	[600, 352, 630, 366]
+      Port	"6"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"hata"
+      SID	"28"
+      Position	[600, 412, 630, 426]
+      Port	"7"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"f"
+      SID	"29"
+      Position	[600, 472, 630, 486]
+      Port	"8"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"sonuc"
+      SID	"30"
+      Position	[600, 532, 630, 546]
+      Port	"9"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Scope
+      Name	"Scope"
+      SID	"31"
+      Ports	[9]
+      Position	[600, 600, 640, 780]
+      NumInputPorts	"9"
+    }
+    Line {
+      SrcBlock	"basinc"
+      SrcPort	1
+      DstBlock	"Tum_Komutlar"
+      DstPort	1
+    }
+    Line {
+      SrcBlock	"komut"
+      SrcPort	1
+      DstBlock	"Tum_Komutlar"
+      DstPort	2
+    }
+    Line {
+      SrcBlock	"izin"
+      SrcPort	1
+      DstBlock	"Tum_Komutlar"
+      DstPort	3
+    }
+    Line {
+      SrcBlock	"kelime"
+      SrcPort	1
+      DstBlock	"Tum_Komutlar"
+      DstPort	4
+    }
+    Line {
+      SrcBlock	"n"
+      SrcPort	1
+      DstBlock	"Tum_Komutlar"
+      DstPort	5
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	1
+      Points	[60, 0]
+      Branch {
+        DstBlock	"valf"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	1
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	2
+      Points	[68, 0]
+      Branch {
+        DstBlock	"pompa"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	2
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	3
+      Points	[76, 0]
+      Branch {
+        DstBlock	"mod"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	3
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	4
+      Points	[84, 0]
+      Branch {
+        DstBlock	"sayac"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	4
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	5
+      Points	[92, 0]
+      Branch {
+        DstBlock	"toplam"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	5
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	6
+      Points	[100, 0]
+      Branch {
+        DstBlock	"bitler"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	6
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	7
+      Points	[108, 0]
+      Branch {
+        DstBlock	"hata"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	7
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	8
+      Points	[116, 0]
+      Branch {
+        DstBlock	"f"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	8
+      }
+    }
+    Line {
+      SrcBlock	"Tum_Komutlar"
+      SrcPort	9
+      Points	[124, 0]
+      Branch {
+        DstBlock	"sonuc"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	9
+      }
+    }
+    Annotation {
+      Name	"Tum_Komutlar - pseudoval. C MEX: once build_Tum_Komutlar calistirin."
+      Position	[220, 600, 560, 620]
+    }
+  }
+}

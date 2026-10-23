@@ -1,0 +1,615 @@
+Model {
+  Name	"Yakit_Yonetimi_model"
+  Version	8.0
+  SavedCharacterEncoding	"UTF-8"
+  Description	"pseudoval tarafindan cok_kompleks.pseudo dosyasindan uretilmistir. Algoritma Yakit_Yonetimi_sfun.m (Level-2 MATLAB S-Function) icindedir; Yakit_Yonetimi_step.m, Yakit_Yonetimi_init.m, Yakit_Yonetimi_params.m ayni klasorde olmalidir."
+  Solver	"FixedStepDiscrete"
+  StartTime	"0.0"
+  StopTime	"10"
+  FixedStep	"0.02"
+  System {
+    Name	"Yakit_Yonetimi_model"
+    Location	[80, 80, 980, 880]
+    Open	on
+    ZoomFactor	"100"
+    Block {
+      BlockType	Inport
+      Name	"p_tank1"
+      SID	"1"
+      Position	[40, 52, 70, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"p_tank2"
+      SID	"2"
+      Position	[40, 112, 70, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"p_tank3"
+      SID	"3"
+      Position	[40, 172, 70, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"sicaklik"
+      SID	"4"
+      Position	[40, 232, 70, 246]
+      Port	"4"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"komut"
+      SID	"5"
+      Position	[40, 292, 70, 306]
+      Port	"5"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"sensor_ok"
+      SID	"6"
+      Position	[40, 352, 70, 366]
+      Port	"6"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Inport
+      Name	"maske"
+      SID	"7"
+      Position	[40, 412, 70, 426]
+      Port	"7"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	SubSystem
+      Name	"Yakit_Yonetimi"
+      SID	"8"
+      Ports	[7, 11]
+      Position	[220, 40, 420, 700]
+      TreatAsAtomicUnit	on
+      Description	"Yakit_Yonetimi_sfun: pseudocode'dan uretilen algoritma"
+      System {
+        Name	"Yakit_Yonetimi"
+        Location	[120, 120, 900, 770]
+        Open	off
+        ZoomFactor	"100"
+        Block {
+          BlockType	Inport
+          Name	"p_tank1"
+          SID	"9"
+          Position	[40, 42, 70, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Inport
+          Name	"p_tank2"
+          SID	"10"
+          Position	[40, 92, 70, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Inport
+          Name	"p_tank3"
+          SID	"11"
+          Position	[40, 142, 70, 156]
+          Port	"3"
+        }
+        Block {
+          BlockType	Inport
+          Name	"sicaklik"
+          SID	"12"
+          Position	[40, 192, 70, 206]
+          Port	"4"
+        }
+        Block {
+          BlockType	Inport
+          Name	"komut"
+          SID	"13"
+          Position	[40, 242, 70, 256]
+          Port	"5"
+        }
+        Block {
+          BlockType	Inport
+          Name	"sensor_ok"
+          SID	"14"
+          Position	[40, 292, 70, 306]
+          Port	"6"
+        }
+        Block {
+          BlockType	Inport
+          Name	"maske"
+          SID	"15"
+          Position	[40, 342, 70, 356]
+          Port	"7"
+        }
+        Block {
+          BlockType	"M-S-Function"
+          Name	"Yakit_Yonetimi_sfun"
+          SID	"16"
+          Ports	[7, 11]
+          Position	[200, 30, 380, 580]
+          FunctionName	"Yakit_Yonetimi_sfun"
+          Parameters	""
+        }
+        Block {
+          BlockType	Outport
+          Name	"durum"
+          SID	"17"
+          Position	[500, 42, 530, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Outport
+          Name	"alt_durum"
+          SID	"18"
+          Position	[500, 92, 530, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Outport
+          Name	"v_giris"
+          SID	"19"
+          Position	[500, 142, 530, 156]
+          Port	"3"
+        }
+        Block {
+          BlockType	Outport
+          Name	"v_cikis"
+          SID	"20"
+          Position	[500, 192, 530, 206]
+          Port	"4"
+        }
+        Block {
+          BlockType	Outport
+          Name	"v_tahliye"
+          SID	"21"
+          Position	[500, 242, 530, 256]
+          Port	"5"
+        }
+        Block {
+          BlockType	Outport
+          Name	"p_secilen"
+          SID	"22"
+          Position	[500, 292, 530, 306]
+          Port	"6"
+        }
+        Block {
+          BlockType	Outport
+          Name	"ariza_kodu"
+          SID	"23"
+          Position	[500, 342, 530, 356]
+          Port	"7"
+        }
+        Block {
+          BlockType	Outport
+          Name	"deneme"
+          SID	"24"
+          Position	[500, 392, 530, 406]
+          Port	"8"
+        }
+        Block {
+          BlockType	Outport
+          Name	"filtre"
+          SID	"25"
+          Position	[500, 442, 530, 456]
+          Port	"9"
+        }
+        Block {
+          BlockType	Outport
+          Name	"histerezis"
+          SID	"26"
+          Position	[500, 492, 530, 506]
+          Port	"10"
+        }
+        Block {
+          BlockType	Outport
+          Name	"kalp"
+          SID	"27"
+          Position	[500, 542, 530, 556]
+          Port	"11"
+        }
+        Line {
+          SrcBlock	"p_tank1"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"p_tank2"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	2
+        }
+        Line {
+          SrcBlock	"p_tank3"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	3
+        }
+        Line {
+          SrcBlock	"sicaklik"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	4
+        }
+        Line {
+          SrcBlock	"komut"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	5
+        }
+        Line {
+          SrcBlock	"sensor_ok"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	6
+        }
+        Line {
+          SrcBlock	"maske"
+          SrcPort	1
+          DstBlock	"Yakit_Yonetimi_sfun"
+          DstPort	7
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	1
+          DstBlock	"durum"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	2
+          DstBlock	"alt_durum"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	3
+          DstBlock	"v_giris"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	4
+          DstBlock	"v_cikis"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	5
+          DstBlock	"v_tahliye"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	6
+          DstBlock	"p_secilen"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	7
+          DstBlock	"ariza_kodu"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	8
+          DstBlock	"deneme"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	9
+          DstBlock	"filtre"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	10
+          DstBlock	"histerezis"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Yakit_Yonetimi_sfun"
+          SrcPort	11
+          DstBlock	"kalp"
+          DstPort	1
+        }
+      }
+    }
+    Block {
+      BlockType	Outport
+      Name	"durum"
+      SID	"28"
+      Position	[600, 52, 630, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"alt_durum"
+      SID	"29"
+      Position	[600, 112, 630, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"v_giris"
+      SID	"30"
+      Position	[600, 172, 630, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"v_cikis"
+      SID	"31"
+      Position	[600, 232, 630, 246]
+      Port	"4"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"v_tahliye"
+      SID	"32"
+      Position	[600, 292, 630, 306]
+      Port	"5"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"p_secilen"
+      SID	"33"
+      Position	[600, 352, 630, 366]
+      Port	"6"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"ariza_kodu"
+      SID	"34"
+      Position	[600, 412, 630, 426]
+      Port	"7"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"deneme"
+      SID	"35"
+      Position	[600, 472, 630, 486]
+      Port	"8"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"filtre"
+      SID	"36"
+      Position	[600, 532, 630, 546]
+      Port	"9"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"histerezis"
+      SID	"37"
+      Position	[600, 592, 630, 606]
+      Port	"10"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"kalp"
+      SID	"38"
+      Position	[600, 652, 630, 666]
+      Port	"11"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Scope
+      Name	"Scope"
+      SID	"39"
+      Ports	[11]
+      Position	[600, 720, 640, 940]
+      NumInputPorts	"11"
+    }
+    Line {
+      SrcBlock	"p_tank1"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	1
+    }
+    Line {
+      SrcBlock	"p_tank2"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	2
+    }
+    Line {
+      SrcBlock	"p_tank3"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	3
+    }
+    Line {
+      SrcBlock	"sicaklik"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	4
+    }
+    Line {
+      SrcBlock	"komut"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	5
+    }
+    Line {
+      SrcBlock	"sensor_ok"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	6
+    }
+    Line {
+      SrcBlock	"maske"
+      SrcPort	1
+      DstBlock	"Yakit_Yonetimi"
+      DstPort	7
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	1
+      Points	[60, 0]
+      Branch {
+        DstBlock	"durum"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	1
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	2
+      Points	[68, 0]
+      Branch {
+        DstBlock	"alt_durum"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	2
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	3
+      Points	[76, 0]
+      Branch {
+        DstBlock	"v_giris"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	3
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	4
+      Points	[84, 0]
+      Branch {
+        DstBlock	"v_cikis"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	4
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	5
+      Points	[92, 0]
+      Branch {
+        DstBlock	"v_tahliye"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	5
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	6
+      Points	[100, 0]
+      Branch {
+        DstBlock	"p_secilen"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	6
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	7
+      Points	[108, 0]
+      Branch {
+        DstBlock	"ariza_kodu"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	7
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	8
+      Points	[116, 0]
+      Branch {
+        DstBlock	"deneme"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	8
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	9
+      Points	[124, 0]
+      Branch {
+        DstBlock	"filtre"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	9
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	10
+      Points	[132, 0]
+      Branch {
+        DstBlock	"histerezis"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	10
+      }
+    }
+    Line {
+      SrcBlock	"Yakit_Yonetimi"
+      SrcPort	11
+      Points	[140, 0]
+      Branch {
+        DstBlock	"kalp"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	11
+      }
+    }
+    Annotation {
+      Name	"Yakit_Yonetimi - pseudoval. Derleme gerekmez (Level-2 MATLAB S-Function). Once Yakit_Yonetimi_selftest calistirin."
+      Position	[220, 720, 560, 740]
+    }
+  }
+}
