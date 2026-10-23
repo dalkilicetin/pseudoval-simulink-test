@@ -18,6 +18,14 @@ for i = 1:numel(mods)
     sonuc(end+1, :) = {M, 'selftest', betik([M '_selftest'])}; %#ok<AGROW>
     close all force;
     sonuc(end+1, :) = {M, 'MATLAB S-Function', simule(M, [M '_model'])}; %#ok<AGROW>
+    if exist([M '_bloklar_kur.m'], 'file')
+        kx = betik([M '_bloklar_kur']);
+        if isempty(kx)
+            sonuc(end+1, :) = {M, 'STANDART BLOKLAR (.slx)', simule(M, [M '_bloklar'])}; %#ok<AGROW>
+        else
+            sonuc(end+1, :) = {M, 'STANDART BLOKLAR kurulum', kx}; %#ok<AGROW>
+        end
+    end
     mx = betik(['build_' M]);
     if isempty(mx)
         sonuc(end+1, :) = {M, 'C MEX S-Function', simule(M, [M '_model_mex'])}; %#ok<AGROW>
@@ -57,7 +65,7 @@ end
 function msg = simule(M, mdl)
 msg = '';
 try
-    load_system([mdl '.mdl']);
+    if ~bdIsLoaded(mdl), load_system(mdl); end
     R = readmatrix('ref_in.csv');
     E = readmatrix('ref_out.csv');
     N = size(E, 1);             % R'de StopTime'ı kapsayan fazladan satır var
