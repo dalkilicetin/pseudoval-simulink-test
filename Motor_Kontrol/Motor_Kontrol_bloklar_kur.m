@@ -1,0 +1,450 @@
+function Motor_Kontrol_bloklar_kur(kaydet)
+%% Motor_Kontrol_bloklar_kur - pseudocode algoritmasini STANDART Simulink bloklariyla kurar
+%%
+%% pseudoval tarafindan YENI_YAZIM_ornek_motor.pseudo dosyasindan uretilmistir.
+%% S-Function YOKTUR. Ana alt sistemde her pseudocode deyimi
+%% yurutme sirasiyla bir alt sistemdir (S03_satir_42_IF_...). Deyimin
+%% icinde her kol (THEN / ELSIF / ELSE / CASE / DEFAULT) bir alt
+%% sistemdir; kollarin degerleri degisken basina tek Switch ya da
+%% Multiport Switch ile birlesir. Kalici degiskenler 'onceki_<ad>'
+%% Unit Delay bloklaridir.
+%%
+%%   >> Motor_Kontrol_bloklar_kur          %% modeli kurar, Motor_Kontrol_bloklar.slx kaydeder
+%%   >> sim('Motor_Kontrol_bloklar')
+
+if nargin < 1, kaydet = true; end
+mdl = 'Motor_Kontrol_bloklar';
+if bdIsLoaded(mdl), close_system(mdl, 0); end
+new_system(mdl);
+set_param(mdl, 'Solver', 'FixedStepDiscrete', 'FixedStep', '0.0050000000000000001', 'StopTime', '10');
+% mantik bloklarinin cikisi double (C ile ayni 0 / 1)
+set_param(mdl, 'BooleanDataType', 'off');
+s = [mdl '/Motor_Kontrol'];
+add_block('simulink/Ports & Subsystems/Subsystem', s, 'Position', [300 60 520 300]);
+Simulink.SubSystem.deleteContents(s);
+
+% --- deyim ve kol alt sistemleri ---
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/Cevrim_sonu_durum_guncelleme'], 'Position', [760 40 1060 80]);
+Simulink.SubSystem.deleteContents([s '/Cevrim_sonu_durum_guncelleme']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'Position', [760 120 1060 160]);
+Simulink.SubSystem.deleteContents([s '/S05_satir_23_IF_AbortCommand_eq_TRUE']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S06_satir_28_SWITCH_MotorState'], 'Position', [760 200 1060 244]);
+Simulink.SubSystem.deleteContents([s '/S06_satir_28_SWITCH_MotorState']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S06_satir_28_SWITCH_MotorState/CASE_OFF']);
+Simulink.SubSystem.deleteContents([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE']);
+Simulink.SubSystem.deleteContents([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON']);
+Simulink.SubSystem.deleteContents([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON']);
+add_block('simulink/Ports & Subsystems/Subsystem', [s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION']);
+Simulink.SubSystem.deleteContents([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION']);
+
+% --- bloklar ---
+add_block('simulink/Discrete/Unit Delay', [s '/onceki_MotorState'], 'InitialCondition', '0.0', 'SampleTime', '0.0050000000000000001', 'Position', [260 360 300 390]);
+add_block('simulink/Discrete/Unit Delay', [s '/onceki_ilk_cevrim'], 'InitialCondition', '1.0', 'SampleTime', '0.0050000000000000001', 'Position', [260 410 300 440]);
+add_block('simulink/Signal Routing/Switch', [[s '/Cevrim_sonu_durum_guncelleme'] '/sw_8'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Relational Operator', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/rel_12'], 'Operator', '==', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/MotorState_14'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/sw_15'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Logical Operator', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/not_19'], 'Operator', 'NOT', 'Inputs', '1', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/sw_40'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Relational Operator', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/rel_39'], 'Operator', '==', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/MotorState_41'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/sw_35'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Relational Operator', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/rel_34'], 'Operator', '==', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/MotorState_36'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/sw_30'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Relational Operator', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/rel_29'], 'Operator', '==', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/MotorState_31'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/sw_25'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Logic and Bit Operations/Relational Operator', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/rel_24'], 'Operator', '==', 'OutDataTypeStr', 'Inherit: Logical (see Configuration Parameters: Optimization)');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/MotorState_26'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Multiport Switch', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorState_42'], 'DataPortOrder', 'Specify indices', 'DataPortIndices', '{0,1,2,3,4}', 'DataPortForDefault', 'Additional data port', 'DiagnosticForDefault', 'None');
+add_block('simulink/Discrete/Unit Delay', [s '/onceki_Ignition'], 'InitialCondition', '0.0', 'SampleTime', '0.0050000000000000001', 'Position', [260 460 300 490]);
+add_block('simulink/Signal Routing/Switch', [[s '/Cevrim_sonu_durum_guncelleme'] '/sw_9'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/Ignition_22'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/Ignition_37'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Multiport Switch', [[s '/S06_satir_28_SWITCH_MotorState'] '/Ignition_43'], 'DataPortOrder', 'Specify indices', 'DataPortIndices', '{0,1,2,3,4}', 'DataPortForDefault', 'Additional data port', 'DiagnosticForDefault', 'None');
+add_block('simulink/Discrete/Unit Delay', [s '/onceki_FuelValve'], 'InitialCondition', '0.0', 'SampleTime', '0.0050000000000000001', 'Position', [260 510 300 540]);
+add_block('simulink/Signal Routing/Switch', [[s '/Cevrim_sonu_durum_guncelleme'] '/sw_7'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/FuelValve_32'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/FuelValve_21'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Multiport Switch', [[s '/S06_satir_28_SWITCH_MotorState'] '/FuelValve_44'], 'DataPortOrder', 'Specify indices', 'DataPortIndices', '{0,1,2,3,4}', 'DataPortForDefault', 'Additional data port', 'DiagnosticForDefault', 'None');
+add_block('simulink/Discrete/Unit Delay', [s '/onceki_MotorEnable'], 'InitialCondition', '0.0', 'SampleTime', '0.0050000000000000001', 'Position', [260 560 300 590]);
+add_block('simulink/Signal Routing/Switch', [[s '/Cevrim_sonu_durum_guncelleme'] '/sw_10'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/MotorEnable_27'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Switch', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/MotorEnable_20'], 'Criteria', 'u2 ~= 0');
+add_block('simulink/Signal Routing/Multiport Switch', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorEnable_45'], 'DataPortOrder', 'Specify indices', 'DataPortIndices', '{0,1,2,3,4}', 'DataPortForDefault', 'Additional data port', 'DiagnosticForDefault', 'None');
+
+% --- baglantilar ---
+add_block('simulink/Sources/In1', [[s '/Cevrim_sonu_durum_guncelleme'] '/onceki_ilk_cevrim_3'], 'Port', '1');
+add_block('simulink/Signal Routing/Goto', [s '/G_onceki_ilk_cevrim_3'], 'GotoTag', 'onceki_ilk_cevrim_3');
+add_line(s, 'onceki_ilk_cevrim/1', 'G_onceki_ilk_cevrim_3/1');
+add_block('simulink/Signal Routing/From', [s '/F_Cevrim_sonu_durum_guncelleme_3'], 'GotoTag', 'onceki_ilk_cevrim_3');
+add_line(s, 'F_Cevrim_sonu_durum_guncelleme_3/1', 'Cevrim_sonu_durum_guncelleme/1');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_ilk_cevrim_3/1', 'sw_8/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/Cevrim_sonu_durum_guncelleme'] '/k_1'], 'Value', '0.0');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'k_1/1', 'sw_8/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/Cevrim_sonu_durum_guncelleme'] '/onceki_MotorState_6'], 'Port', '2');
+add_block('simulink/Signal Routing/Goto', [s '/G_onceki_MotorState_6'], 'GotoTag', 'onceki_MotorState_6');
+add_line(s, 'onceki_MotorState/1', 'G_onceki_MotorState_6/1');
+add_block('simulink/Signal Routing/From', [s '/F_Cevrim_sonu_durum_guncelleme_6'], 'GotoTag', 'onceki_MotorState_6');
+add_line(s, 'F_Cevrim_sonu_durum_guncelleme_6/1', 'Cevrim_sonu_durum_guncelleme/2');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_MotorState_6/1', 'sw_8/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/AbortCommand_11'], 'Port', '1');
+add_block('simulink/Signal Routing/Goto', [s '/G_AbortCommand_11'], 'GotoTag', 'AbortCommand_11');
+add_line(s, 'AbortCommand/1', 'G_AbortCommand_11/1');
+add_block('simulink/Signal Routing/From', [s '/F_S05_satir_23_IF_AbortCommand_eq_TRUE_11'], 'GotoTag', 'AbortCommand_11');
+add_line(s, 'F_S05_satir_23_IF_AbortCommand_eq_TRUE_11/1', 'S05_satir_23_IF_AbortCommand_eq_TRUE/1');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'AbortCommand_11/1', 'rel_12/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/k_2'], 'Value', '1.0');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'k_2/1', 'rel_12/2', 'autorouting', 'on');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'rel_12/1', 'MotorState_14/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/k_3'], 'Value', '0.0');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'k_3/1', 'MotorState_14/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/ara_8_8'], 'Port', '2');
+add_block('simulink/Sinks/Out1', [[s '/Cevrim_sonu_durum_guncelleme'] '/ara_8_o8'], 'Port', '1');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'sw_8/1', 'ara_8_o8/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_ara_8_8'], 'GotoTag', 'ara_8_8');
+add_line(s, 'Cevrim_sonu_durum_guncelleme/1', 'G_ara_8_8/1');
+add_block('simulink/Signal Routing/From', [s '/F_S05_satir_23_IF_AbortCommand_eq_TRUE_8'], 'GotoTag', 'ara_8_8');
+add_line(s, 'F_S05_satir_23_IF_AbortCommand_eq_TRUE_8/1', 'S05_satir_23_IF_AbortCommand_eq_TRUE/2');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'ara_8_8/1', 'MotorState_14/3', 'autorouting', 'on');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'rel_12/1', 'sw_15/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/k_4'], 'Value', '1.0');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'k_4/1', 'sw_15/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/k_5'], 'Value', '0.0');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'k_5/1', 'sw_15/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/ara_15_15'], 'Port', '1');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/ara_15_15'], 'Port', '1');
+add_block('simulink/Sinks/Out1', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/ara_15_o15'], 'Port', '1');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'sw_15/1', 'ara_15_o15/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_ara_15_15'], 'GotoTag', 'ara_15_15');
+add_line(s, 'S05_satir_23_IF_AbortCommand_eq_TRUE/1', 'G_ara_15_15/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_15'], 'GotoTag', 'ara_15_15');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_15/1', 'S06_satir_28_SWITCH_MotorState/1');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_15_15/1', 'CASE_OFF/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'ara_15_15/1', 'not_19/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/ara_19_19'], 'Port', '1');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/ara_19_o19'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'not_19/1', 'ara_19_o19/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/1', 'CASE_IGNITION/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'ara_19_19/1', 'sw_40/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/k_6'], 'Value', '4.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'k_6/1', 'sw_40/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/MotorState_14'], 'Port', '2');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorState_14'], 'Port', '2');
+add_block('simulink/Sinks/Out1', [[s '/S05_satir_23_IF_AbortCommand_eq_TRUE'] '/MotorState_o14'], 'Port', '2');
+add_line([s '/S05_satir_23_IF_AbortCommand_eq_TRUE'], 'MotorState_14/1', 'MotorState_o14/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_MotorState_14'], 'GotoTag', 'MotorState_14');
+add_line(s, 'S05_satir_23_IF_AbortCommand_eq_TRUE/2', 'G_MotorState_14/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_14'], 'GotoTag', 'MotorState_14');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_14/1', 'S06_satir_28_SWITCH_MotorState/2');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'CASE_IGNITION/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'MotorState_14/1', 'sw_40/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/MotorRunning_38'], 'Port', '3');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorRunning_38'], 'Port', '3');
+add_block('simulink/Signal Routing/Goto', [s '/G_MotorRunning_38'], 'GotoTag', 'MotorRunning_38');
+add_line(s, 'MotorRunning/1', 'G_MotorRunning_38/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_38'], 'GotoTag', 'MotorRunning_38');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_38/1', 'S06_satir_28_SWITCH_MotorState/3');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorRunning_38/1', 'CASE_IGNITION/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'MotorRunning_38/1', 'rel_39/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/k_7'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'k_7/1', 'rel_39/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'rel_39/1', 'MotorState_41/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'sw_40/1', 'MotorState_41/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'MotorState_14/1', 'MotorState_41/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/ara_19_19'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/1', 'CASE_FUEL_ON/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'ara_19_19/1', 'sw_35/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/k_8'], 'Value', '3.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'k_8/1', 'sw_35/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/MotorState_14'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'CASE_FUEL_ON/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'MotorState_14/1', 'sw_35/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/FuelPressureOK_33'], 'Port', '3');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/FuelPressureOK_33'], 'Port', '4');
+add_block('simulink/Signal Routing/Goto', [s '/G_FuelPressureOK_33'], 'GotoTag', 'FuelPressureOK_33');
+add_line(s, 'FuelPressureOK/1', 'G_FuelPressureOK_33/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_33'], 'GotoTag', 'FuelPressureOK_33');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_33/1', 'S06_satir_28_SWITCH_MotorState/4');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'FuelPressureOK_33/1', 'CASE_FUEL_ON/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'FuelPressureOK_33/1', 'rel_34/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/k_9'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'k_9/1', 'rel_34/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'rel_34/1', 'MotorState_36/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'sw_35/1', 'MotorState_36/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'MotorState_14/1', 'MotorState_36/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/ara_19_19'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/1', 'CASE_PREPARE/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'ara_19_19/1', 'sw_30/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/k_10'], 'Value', '2.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'k_10/1', 'sw_30/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/MotorState_14'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'CASE_PREPARE/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'MotorState_14/1', 'sw_30/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/PreparationComplete_28'], 'Port', '3');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/PreparationComplete_28'], 'Port', '5');
+add_block('simulink/Signal Routing/Goto', [s '/G_PreparationComplete_28'], 'GotoTag', 'PreparationComplete_28');
+add_line(s, 'PreparationComplete/1', 'G_PreparationComplete_28/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_28'], 'GotoTag', 'PreparationComplete_28');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_28/1', 'S06_satir_28_SWITCH_MotorState/5');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'PreparationComplete_28/1', 'CASE_PREPARE/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'PreparationComplete_28/1', 'rel_29/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/k_11'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'k_11/1', 'rel_29/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'rel_29/1', 'MotorState_31/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'sw_30/1', 'MotorState_31/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'MotorState_14/1', 'MotorState_31/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'not_19/1', 'sw_25/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/k_12'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'k_12/1', 'sw_25/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/MotorState_14'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'CASE_OFF/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'MotorState_14/1', 'sw_25/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/StartCommand_23'], 'Port', '3');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/StartCommand_23'], 'Port', '6');
+add_block('simulink/Signal Routing/Goto', [s '/G_StartCommand_23'], 'GotoTag', 'StartCommand_23');
+add_line(s, 'StartCommand/1', 'G_StartCommand_23/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_23'], 'GotoTag', 'StartCommand_23');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_23/1', 'S06_satir_28_SWITCH_MotorState/6');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'StartCommand_23/1', 'CASE_OFF/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'StartCommand_23/1', 'rel_24/1', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/k_13'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'k_13/1', 'rel_24/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'rel_24/1', 'MotorState_26/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'sw_25/1', 'MotorState_26/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'MotorState_14/1', 'MotorState_26/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'MotorState_42/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/MotorState_o26'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'MotorState_26/1', 'MotorState_o26/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/2', 'MotorState_42/2', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/MotorState_o31'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'MotorState_31/1', 'MotorState_o31/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_PREPARE/1', 'MotorState_42/3', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/MotorState_o36'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'MotorState_36/1', 'MotorState_o36/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_FUEL_ON/1', 'MotorState_42/4', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/MotorState_o41'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'MotorState_41/1', 'MotorState_o41/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_IGNITION/1', 'MotorState_42/5', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'MotorState_42/6', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'MotorState_42/7', 'autorouting', 'on');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_ilk_cevrim_3/1', 'sw_9/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/Cevrim_sonu_durum_guncelleme'] '/k_14'], 'Value', '0.0');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'k_14/1', 'sw_9/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/Cevrim_sonu_durum_guncelleme'] '/onceki_Ignition_2'], 'Port', '3');
+add_block('simulink/Signal Routing/Goto', [s '/G_onceki_Ignition_2'], 'GotoTag', 'onceki_Ignition_2');
+add_line(s, 'onceki_Ignition/1', 'G_onceki_Ignition_2/1');
+add_block('simulink/Signal Routing/From', [s '/F_Cevrim_sonu_durum_guncelleme_2'], 'GotoTag', 'onceki_Ignition_2');
+add_line(s, 'F_Cevrim_sonu_durum_guncelleme_2/1', 'Cevrim_sonu_durum_guncelleme/3');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_Ignition_2/1', 'sw_9/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'not_19/1', 'Ignition_22/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/k_15'], 'Value', '0.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'k_15/1', 'Ignition_22/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/ara_9_9'], 'Port', '4');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/ara_9_9'], 'Port', '7');
+add_block('simulink/Sinks/Out1', [[s '/Cevrim_sonu_durum_guncelleme'] '/ara_9_o9'], 'Port', '2');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'sw_9/1', 'ara_9_o9/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_ara_9_9'], 'GotoTag', 'ara_9_9');
+add_line(s, 'Cevrim_sonu_durum_guncelleme/2', 'G_ara_9_9/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_9'], 'GotoTag', 'ara_9_9');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_9/1', 'S06_satir_28_SWITCH_MotorState/7');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_9_9/1', 'CASE_OFF/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'ara_9_9/1', 'Ignition_22/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'ara_19_19/1', 'Ignition_37/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/k_16'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'k_16/1', 'Ignition_37/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/ara_9_9'], 'Port', '4');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_9_9/1', 'CASE_IGNITION/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'ara_9_9/1', 'Ignition_37/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'Ignition_43/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/Ignition_o22'], 'Port', '3');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'Ignition_22/1', 'Ignition_o22/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/3', 'Ignition_43/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/3', 'Ignition_43/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/3', 'Ignition_43/4', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'] '/Ignition_o37'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION'], 'Ignition_37/1', 'Ignition_o37/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_IGNITION/2', 'Ignition_43/5', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/3', 'Ignition_43/6', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_9_9/1', 'Ignition_43/7', 'autorouting', 'on');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_ilk_cevrim_3/1', 'sw_7/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/Cevrim_sonu_durum_guncelleme'] '/k_17'], 'Value', '0.0');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'k_17/1', 'sw_7/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/Cevrim_sonu_durum_guncelleme'] '/onceki_FuelValve_1'], 'Port', '4');
+add_block('simulink/Signal Routing/Goto', [s '/G_onceki_FuelValve_1'], 'GotoTag', 'onceki_FuelValve_1');
+add_line(s, 'onceki_FuelValve/1', 'G_onceki_FuelValve_1/1');
+add_block('simulink/Signal Routing/From', [s '/F_Cevrim_sonu_durum_guncelleme_1'], 'GotoTag', 'onceki_FuelValve_1');
+add_line(s, 'F_Cevrim_sonu_durum_guncelleme_1/1', 'Cevrim_sonu_durum_guncelleme/4');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_FuelValve_1/1', 'sw_7/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'ara_19_19/1', 'FuelValve_32/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/k_18'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'k_18/1', 'FuelValve_32/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/ara_7_7'], 'Port', '4');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/ara_7_7'], 'Port', '8');
+add_block('simulink/Sinks/Out1', [[s '/Cevrim_sonu_durum_guncelleme'] '/ara_7_o7'], 'Port', '3');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'sw_7/1', 'ara_7_o7/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_ara_7_7'], 'GotoTag', 'ara_7_7');
+add_line(s, 'Cevrim_sonu_durum_guncelleme/3', 'G_ara_7_7/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_7'], 'GotoTag', 'ara_7_7');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_7/1', 'S06_satir_28_SWITCH_MotorState/8');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_7_7/1', 'CASE_FUEL_ON/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'ara_7_7/1', 'FuelValve_32/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'not_19/1', 'FuelValve_21/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/k_19'], 'Value', '0.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'k_19/1', 'FuelValve_21/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/ara_7_7'], 'Port', '5');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_7_7/1', 'CASE_OFF/5', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'ara_7_7/1', 'FuelValve_21/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'FuelValve_44/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/FuelValve_o21'], 'Port', '4');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'FuelValve_21/1', 'FuelValve_o21/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/4', 'FuelValve_44/2', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/4', 'FuelValve_44/3', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'] '/FuelValve_o32'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON'], 'FuelValve_32/1', 'FuelValve_o32/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_FUEL_ON/2', 'FuelValve_44/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_7_7/1', 'FuelValve_44/5', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_FUEL_ON/2', 'FuelValve_44/6', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_7_7/1', 'FuelValve_44/7', 'autorouting', 'on');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_ilk_cevrim_3/1', 'sw_10/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/Cevrim_sonu_durum_guncelleme'] '/k_20'], 'Value', '0.0');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'k_20/1', 'sw_10/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/Cevrim_sonu_durum_guncelleme'] '/onceki_MotorEnable_0'], 'Port', '5');
+add_block('simulink/Signal Routing/Goto', [s '/G_onceki_MotorEnable_0'], 'GotoTag', 'onceki_MotorEnable_0');
+add_line(s, 'onceki_MotorEnable/1', 'G_onceki_MotorEnable_0/1');
+add_block('simulink/Signal Routing/From', [s '/F_Cevrim_sonu_durum_guncelleme_0'], 'GotoTag', 'onceki_MotorEnable_0');
+add_line(s, 'F_Cevrim_sonu_durum_guncelleme_0/1', 'Cevrim_sonu_durum_guncelleme/5');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'onceki_MotorEnable_0/1', 'sw_10/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'ara_19_19/1', 'MotorEnable_27/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/k_21'], 'Value', '1.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'k_21/1', 'MotorEnable_27/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/ara_10_10'], 'Port', '4');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState'] '/ara_10_10'], 'Port', '9');
+add_block('simulink/Sinks/Out1', [[s '/Cevrim_sonu_durum_guncelleme'] '/ara_10_o10'], 'Port', '4');
+add_line([s '/Cevrim_sonu_durum_guncelleme'], 'sw_10/1', 'ara_10_o10/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_ara_10_10'], 'GotoTag', 'ara_10_10');
+add_line(s, 'Cevrim_sonu_durum_guncelleme/4', 'G_ara_10_10/1');
+add_block('simulink/Signal Routing/From', [s '/F_S06_satir_28_SWITCH_MotorState_10'], 'GotoTag', 'ara_10_10');
+add_line(s, 'F_S06_satir_28_SWITCH_MotorState_10/1', 'S06_satir_28_SWITCH_MotorState/9');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_10_10/1', 'CASE_PREPARE/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'ara_10_10/1', 'MotorEnable_27/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'not_19/1', 'MotorEnable_20/2', 'autorouting', 'on');
+add_block('simulink/Sources/Constant', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/k_22'], 'Value', '0.0');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'k_22/1', 'MotorEnable_20/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/ara_10_10'], 'Port', '6');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_10_10/1', 'CASE_OFF/6', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'ara_10_10/1', 'MotorEnable_20/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_14/1', 'MotorEnable_45/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'] '/MotorEnable_o20'], 'Port', '5');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF'], 'MotorEnable_20/1', 'MotorEnable_o20/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_OFF/5', 'MotorEnable_45/2', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'] '/MotorEnable_o27'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE'], 'MotorEnable_27/1', 'MotorEnable_o27/1', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_PREPARE/2', 'MotorEnable_45/3', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_10_10/1', 'MotorEnable_45/4', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_10_10/1', 'MotorEnable_45/5', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'CASE_PREPARE/2', 'MotorEnable_45/6', 'autorouting', 'on');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'ara_10_10/1', 'MotorEnable_45/7', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [s '/StartCommand'], 'Port', '1', 'Position', [40 40 70 54]);
+add_block('simulink/Sources/In1', [s '/PreparationComplete'], 'Port', '2', 'Position', [40 90 70 104]);
+add_block('simulink/Sources/In1', [s '/FuelPressureOK'], 'Port', '3', 'Position', [40 140 70 154]);
+add_block('simulink/Sources/In1', [s '/MotorRunning'], 'Port', '4', 'Position', [40 190 70 204]);
+add_block('simulink/Sources/In1', [s '/AbortCommand'], 'Port', '5', 'Position', [40 240 70 254]);
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorState_o42'], 'Port', '1');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorState_42/1', 'MotorState_o42/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_MotorState_42'], 'GotoTag', 'MotorState_42');
+add_line(s, 'S06_satir_28_SWITCH_MotorState/1', 'G_MotorState_42/1');
+add_block('simulink/Signal Routing/From', [s '/F_d6'], 'GotoTag', 'MotorState_42');
+add_line(s, 'F_d6/1', 'onceki_MotorState/1');
+add_block('simulink/Sources/Constant', [s '/k_d3'], 'Value', '0.0');
+add_line(s, 'k_d3/1', 'onceki_ilk_cevrim/1');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState'] '/Ignition_o43'], 'Port', '2');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'Ignition_43/1', 'Ignition_o43/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_Ignition_43'], 'GotoTag', 'Ignition_43');
+add_line(s, 'S06_satir_28_SWITCH_MotorState/2', 'G_Ignition_43/1');
+add_block('simulink/Signal Routing/From', [s '/F_d2'], 'GotoTag', 'Ignition_43');
+add_line(s, 'F_d2/1', 'onceki_Ignition/1');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState'] '/FuelValve_o44'], 'Port', '3');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'FuelValve_44/1', 'FuelValve_o44/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_FuelValve_44'], 'GotoTag', 'FuelValve_44');
+add_line(s, 'S06_satir_28_SWITCH_MotorState/3', 'G_FuelValve_44/1');
+add_block('simulink/Signal Routing/From', [s '/F_d1'], 'GotoTag', 'FuelValve_44');
+add_line(s, 'F_d1/1', 'onceki_FuelValve/1');
+add_block('simulink/Sinks/Out1', [[s '/S06_satir_28_SWITCH_MotorState'] '/MotorEnable_o45'], 'Port', '4');
+add_line([s '/S06_satir_28_SWITCH_MotorState'], 'MotorEnable_45/1', 'MotorEnable_o45/1', 'autorouting', 'on');
+add_block('simulink/Signal Routing/Goto', [s '/G_MotorEnable_45'], 'GotoTag', 'MotorEnable_45');
+add_line(s, 'S06_satir_28_SWITCH_MotorState/4', 'G_MotorEnable_45/1');
+add_block('simulink/Signal Routing/From', [s '/F_d0'], 'GotoTag', 'MotorEnable_45');
+add_line(s, 'F_d0/1', 'onceki_MotorEnable/1');
+add_block('simulink/Sinks/Out1', [s '/out_MotorEnable'], 'Port', '1', 'Position', [1400 40 1430 54]);
+add_block('simulink/Signal Routing/From', [s '/Fout_1'], 'GotoTag', 'MotorEnable_45');
+add_line(s, 'Fout_1/1', 'out_MotorEnable/1');
+add_block('simulink/Sinks/Out1', [s '/out_FuelValve'], 'Port', '2', 'Position', [1400 90 1430 104]);
+add_block('simulink/Signal Routing/From', [s '/Fout_2'], 'GotoTag', 'FuelValve_44');
+add_line(s, 'Fout_2/1', 'out_FuelValve/1');
+add_block('simulink/Sinks/Out1', [s '/out_Ignition'], 'Port', '3', 'Position', [1400 140 1430 154]);
+add_block('simulink/Signal Routing/From', [s '/Fout_3'], 'GotoTag', 'Ignition_43');
+add_line(s, 'Fout_3/1', 'out_Ignition/1');
+
+% --- kok: girisler / cikislar ---
+add_block('simulink/Sources/In1', [mdl '/StartCommand'], 'Port', '1', 'Interpolate', 'off', 'Position', [60 70 90 84]);
+add_line(mdl, 'StartCommand/1', 'Motor_Kontrol/1', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [mdl '/PreparationComplete'], 'Port', '2', 'Interpolate', 'off', 'Position', [60 110 90 124]);
+add_line(mdl, 'PreparationComplete/1', 'Motor_Kontrol/2', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [mdl '/FuelPressureOK'], 'Port', '3', 'Interpolate', 'off', 'Position', [60 150 90 164]);
+add_line(mdl, 'FuelPressureOK/1', 'Motor_Kontrol/3', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [mdl '/MotorRunning'], 'Port', '4', 'Interpolate', 'off', 'Position', [60 190 90 204]);
+add_line(mdl, 'MotorRunning/1', 'Motor_Kontrol/4', 'autorouting', 'on');
+add_block('simulink/Sources/In1', [mdl '/AbortCommand'], 'Port', '5', 'Interpolate', 'off', 'Position', [60 230 90 244]);
+add_line(mdl, 'AbortCommand/1', 'Motor_Kontrol/5', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [mdl '/MotorEnable'], 'Port', '1', 'Position', [640 70 670 84]);
+add_line(mdl, 'Motor_Kontrol/1', 'MotorEnable/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [mdl '/FuelValve'], 'Port', '2', 'Position', [640 110 670 124]);
+add_line(mdl, 'Motor_Kontrol/2', 'FuelValve/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [mdl '/Ignition'], 'Port', '3', 'Position', [640 150 670 164]);
+add_line(mdl, 'Motor_Kontrol/3', 'Ignition/1', 'autorouting', 'on');
+
+% --- yerlesim: deyim / kol alt sistemleri otomatik, ana seviye
+%     elle (girisler ve durum solda, deyimler sirayla, cikislar sagda)
+try
+    Simulink.BlockDiagram.arrangeSystem([s '/S06_satir_28_SWITCH_MotorState/CASE_OFF']);
+    Simulink.BlockDiagram.arrangeSystem([s '/S06_satir_28_SWITCH_MotorState/CASE_PREPARE']);
+    Simulink.BlockDiagram.arrangeSystem([s '/S06_satir_28_SWITCH_MotorState/CASE_FUEL_ON']);
+    Simulink.BlockDiagram.arrangeSystem([s '/S06_satir_28_SWITCH_MotorState/CASE_IGNITION']);
+    Simulink.BlockDiagram.arrangeSystem([s '/Cevrim_sonu_durum_guncelleme']);
+    Simulink.BlockDiagram.arrangeSystem([s '/S05_satir_23_IF_AbortCommand_eq_TRUE']);
+    Simulink.BlockDiagram.arrangeSystem([s '/S06_satir_28_SWITCH_MotorState']);
+catch
+end
+yerlestir(s);
+if kaydet
+    save_system(mdl, [mdl '.slx']);
+    fprintf('Kaydedildi: %s.slx\n', mdl);
+end
+end
+
+function yerlestir(s)
+%% Goto / From bloklarini bagli olduklari blogun yanina koyar
+b = find_system(s, 'SearchDepth', 1, 'BlockType', 'Goto');
+for i = 1:numel(b)
+    pc = get_param(b{i}, 'PortConnectivity');
+    src = pc(1).SrcBlock;
+    if isempty(src) || src < 0, continue; end
+    p = get_param(src, 'Position');
+    pp = get_param(src, 'PortConnectivity');
+    y = pc(1).Position(2);
+    set_param(b{i}, 'Position', [p(3) + 30, y - 10, p(3) + 200, y + 10]);
+end
+f = find_system(s, 'SearchDepth', 1, 'BlockType', 'From');
+for i = 1:numel(f)
+    pc = get_param(f{i}, 'PortConnectivity');
+    dst = pc(end).DstBlock;
+    if isempty(dst), continue; end
+    p = get_param(dst(1), 'Position');
+    y = pc(end).Position(2);
+    set_param(f{i}, 'Position', [p(1) - 200, y - 10, p(1) - 30, y + 10]);
+end
+end

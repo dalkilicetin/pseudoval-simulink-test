@@ -1,0 +1,294 @@
+Model {
+  Name	"Motor_Kontrol_model"
+  Version	8.0
+  SavedCharacterEncoding	"UTF-8"
+  Description	"pseudoval tarafindan YENI_YAZIM_ornek_motor.pseudo dosyasindan uretilmistir. Algoritma Motor_Kontrol_sfun.m (Level-2 MATLAB S-Function) icindedir; Motor_Kontrol_step.m, Motor_Kontrol_init.m, Motor_Kontrol_params.m ayni klasorde olmalidir."
+  Solver	"FixedStepDiscrete"
+  StartTime	"0.0"
+  StopTime	"10"
+  FixedStep	"0.005"
+  System {
+    Name	"Motor_Kontrol_model"
+    Location	[80, 80, 980, 520]
+    Open	on
+    ZoomFactor	"100"
+    Block {
+      BlockType	Inport
+      Name	"StartCommand"
+      SID	"1"
+      Position	[40, 52, 70, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+      Interpolate	off
+    }
+    Block {
+      BlockType	Inport
+      Name	"PreparationComplete"
+      SID	"2"
+      Position	[40, 112, 70, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+      Interpolate	off
+    }
+    Block {
+      BlockType	Inport
+      Name	"FuelPressureOK"
+      SID	"3"
+      Position	[40, 172, 70, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+      Interpolate	off
+    }
+    Block {
+      BlockType	Inport
+      Name	"MotorRunning"
+      SID	"4"
+      Position	[40, 232, 70, 246]
+      Port	"4"
+      IconDisplay	"Port number"
+      Interpolate	off
+    }
+    Block {
+      BlockType	Inport
+      Name	"AbortCommand"
+      SID	"5"
+      Position	[40, 292, 70, 306]
+      Port	"5"
+      IconDisplay	"Port number"
+      Interpolate	off
+    }
+    Block {
+      BlockType	SubSystem
+      Name	"Motor_Kontrol"
+      SID	"6"
+      Ports	[5, 3]
+      Position	[220, 40, 420, 340]
+      TreatAsAtomicUnit	on
+      Description	"Motor_Kontrol_sfun: pseudocode'dan uretilen algoritma"
+      System {
+        Name	"Motor_Kontrol"
+        Location	[120, 120, 900, 470]
+        Open	off
+        ZoomFactor	"100"
+        Block {
+          BlockType	Inport
+          Name	"StartCommand"
+          SID	"7"
+          Position	[40, 42, 70, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Inport
+          Name	"PreparationComplete"
+          SID	"8"
+          Position	[40, 92, 70, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Inport
+          Name	"FuelPressureOK"
+          SID	"9"
+          Position	[40, 142, 70, 156]
+          Port	"3"
+        }
+        Block {
+          BlockType	Inport
+          Name	"MotorRunning"
+          SID	"10"
+          Position	[40, 192, 70, 206]
+          Port	"4"
+        }
+        Block {
+          BlockType	Inport
+          Name	"AbortCommand"
+          SID	"11"
+          Position	[40, 242, 70, 256]
+          Port	"5"
+        }
+        Block {
+          BlockType	"M-S-Function"
+          Name	"Motor_Kontrol_sfun"
+          SID	"12"
+          Ports	[5, 3]
+          Position	[200, 30, 380, 280]
+          FunctionName	"Motor_Kontrol_sfun"
+          Parameters	""
+        }
+        Block {
+          BlockType	Outport
+          Name	"MotorEnable"
+          SID	"13"
+          Position	[500, 42, 530, 56]
+          Port	"1"
+        }
+        Block {
+          BlockType	Outport
+          Name	"FuelValve"
+          SID	"14"
+          Position	[500, 92, 530, 106]
+          Port	"2"
+        }
+        Block {
+          BlockType	Outport
+          Name	"Ignition"
+          SID	"15"
+          Position	[500, 142, 530, 156]
+          Port	"3"
+        }
+        Line {
+          SrcBlock	"StartCommand"
+          SrcPort	1
+          DstBlock	"Motor_Kontrol_sfun"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"PreparationComplete"
+          SrcPort	1
+          DstBlock	"Motor_Kontrol_sfun"
+          DstPort	2
+        }
+        Line {
+          SrcBlock	"FuelPressureOK"
+          SrcPort	1
+          DstBlock	"Motor_Kontrol_sfun"
+          DstPort	3
+        }
+        Line {
+          SrcBlock	"MotorRunning"
+          SrcPort	1
+          DstBlock	"Motor_Kontrol_sfun"
+          DstPort	4
+        }
+        Line {
+          SrcBlock	"AbortCommand"
+          SrcPort	1
+          DstBlock	"Motor_Kontrol_sfun"
+          DstPort	5
+        }
+        Line {
+          SrcBlock	"Motor_Kontrol_sfun"
+          SrcPort	1
+          DstBlock	"MotorEnable"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Motor_Kontrol_sfun"
+          SrcPort	2
+          DstBlock	"FuelValve"
+          DstPort	1
+        }
+        Line {
+          SrcBlock	"Motor_Kontrol_sfun"
+          SrcPort	3
+          DstBlock	"Ignition"
+          DstPort	1
+        }
+      }
+    }
+    Block {
+      BlockType	Outport
+      Name	"MotorEnable"
+      SID	"16"
+      Position	[600, 52, 630, 66]
+      Port	"1"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"FuelValve"
+      SID	"17"
+      Position	[600, 112, 630, 126]
+      Port	"2"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Outport
+      Name	"Ignition"
+      SID	"18"
+      Position	[600, 172, 630, 186]
+      Port	"3"
+      IconDisplay	"Port number"
+    }
+    Block {
+      BlockType	Scope
+      Name	"Scope"
+      SID	"19"
+      Ports	[3]
+      Position	[600, 240, 640, 300]
+      NumInputPorts	"3"
+    }
+    Line {
+      SrcBlock	"StartCommand"
+      SrcPort	1
+      DstBlock	"Motor_Kontrol"
+      DstPort	1
+    }
+    Line {
+      SrcBlock	"PreparationComplete"
+      SrcPort	1
+      DstBlock	"Motor_Kontrol"
+      DstPort	2
+    }
+    Line {
+      SrcBlock	"FuelPressureOK"
+      SrcPort	1
+      DstBlock	"Motor_Kontrol"
+      DstPort	3
+    }
+    Line {
+      SrcBlock	"MotorRunning"
+      SrcPort	1
+      DstBlock	"Motor_Kontrol"
+      DstPort	4
+    }
+    Line {
+      SrcBlock	"AbortCommand"
+      SrcPort	1
+      DstBlock	"Motor_Kontrol"
+      DstPort	5
+    }
+    Line {
+      SrcBlock	"Motor_Kontrol"
+      SrcPort	1
+      Points	[60, 0]
+      Branch {
+        DstBlock	"MotorEnable"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	1
+      }
+    }
+    Line {
+      SrcBlock	"Motor_Kontrol"
+      SrcPort	2
+      Points	[68, 0]
+      Branch {
+        DstBlock	"FuelValve"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	2
+      }
+    }
+    Line {
+      SrcBlock	"Motor_Kontrol"
+      SrcPort	3
+      Points	[76, 0]
+      Branch {
+        DstBlock	"Ignition"
+        DstPort	1
+      }
+      Branch {
+        DstBlock	"Scope"
+        DstPort	3
+      }
+    }
+    Annotation {
+      Name	"Motor_Kontrol - pseudoval. Derleme gerekmez (Level-2 MATLAB S-Function). Once Motor_Kontrol_selftest calistirin."
+      Position	[220, 360, 560, 380]
+    }
+  }
+}
